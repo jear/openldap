@@ -1,0 +1,666 @@
+   40  yum -y install openldap-clients openldap-servers
+   41  systemctl start slapd
+   42  systemctl status slapd
+   43  slappasswd
+   44  vi /etc/openldap/slapd.d/cn\=config/olcDatabase\=\{2\}hdb.ldif 
+   45   ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=config olcDatabase=\*
+   46  vi my_config.ldif
+   47  ldapmodify -Y EXTERNAL -H ldapi:/// -f my_config.ldif
+   48   ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=config olcDatabase=\*
+   49  vi my_config2.ldif
+   50  ldapmodify -Y EXTERNAL -H ldapi:/// -f my_config2.ldif
+   51  vi my_config3.ldif
+   52  ldapmodify -Y EXTERNAL -H ldapi:/// -f my_config3.ldif
+   53  ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=config olcDatabase=\*
+   54  slaptest -u
+   55  vi example.ldif
+   56  ldapadd -f example.ldif -D cn=admin,dc=jear,dc=co -w hpinvent
+   57   ldapsearch -x -b dc=jear,dc=co
+   58  vi users.ldif
+   59  ldapadd -f users.ldif -D cn=admin,dc=jear,dc=co -w hpinvent
+   60  vi archimedes.ldif
+   61  ldapadd -f archimedes.ldif -D cn=admin,dc=jear,dc=co -w hpinvent
+   62  vi archimedes.ldif
+   63  vi /etc/openldap/schema/inetorgperson.ldif 
+   64  ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/inetorgperson.ldif
+   65  ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/cosine.ldif
+   66  ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/inetorgperson.ldif
+   67  ldapadd -f archimedes.ldif -D cn=admin,dc=jear,dc=co -w hpinvent
+   68  slapcat -b "cn=schema,cn=config"
+   69  vi group.ldif
+   70  ldapadd -f group.ldif -D cn=admin,dc=jear,dc=co -w hpinvent
+   71  ldapsearch -x -b "dc=example,dc=com" "(cn=Archimedes)"
+   72  vi group.ldif 
+   73  vi users.ldif 
+   74  ll
+   75  vi archimedes.ldif 
+   76  $ ldapsearch -x -LLL -h host.example.com -D user -w password -b"dc=ad,dc=example,dc=com" -s sub "(objectClass=user)" givenName
+   77  ldapsearch -x -LLL -h nfs.jear.co -D arch -w eureka -b"dc=jear,dc=jear,dc=co" -s sub "(objectClass=user)" givenName
+   78  ldapsearch -x -b "dc=example,dc=com" "(cn=Archimedes)"
+   79  ldapsearch -x -b "dc=jear,dc=co" "(cn=Archimedes)"
+   80  ldapsearch -x -LLL -h nfs.jear.co -D arch -w eureka -b "dc=jear,dc=co" "(cn=Archimedes)"
+   81  ldapsearch -x -b "dc=jear,dc=co" "(cn=Archimedes)"
+
+
+
+TROUBLESHOOTING NOW... BUT it is already working ! 
+
+   95   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=arch'
+   96   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=admin'
+   98   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=toto'
+   99  ldapsearch -x -LLL -h nfs.jear.co -D arch -w eureka -b "dc=jear,dc=co" "(cn=Archimedes)"
+  101   ldapsearch -x -b dc=jear,dc=co
+  102   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=Archimedes'
+  104  vi archimedes.ldif
+  107  ldapsearch -x -LLL -h nfs.jear.co -D arch -w eureka -b "dc=jear,dc=co" "(cn=Archimedes)"
+  115  vi /etc/nsswitch.conf
+  118  ldapsearch -Y EXTERNAL -H ldapi:/// -b "cn=config" "(objectclass=olchdbconfig)"
+  119  vi /etc/sssd/sssd.conf
+  120  getent passwd
+  121  vi /etc/nsswitch.conf
+  122  systemctl restart slapd
+  123  getent passwd
+  124  vi /etc/nsswitch.conf
+  125  systemctl restart slapd
+  126  getent passwd
+  127  yum -y install authconfig
+  128  authconfig --passalgo=sha256 --enablelocauthorize --enablemkhomedir --enableldap --enableldapauth --ldapserver=ldap://127.0.0.1 --ldapbasedn=dc=example,dc=com --enableshadow --update
+  129  authconfig --passalgo=sha256 --enablelocauthorize --enablemkhomedir --enableldap --enableldapauth --ldapserver=ldap://127.0.0.1 --ldapbasedn=dc=jear,dc=co --enableshadow --update
+  130  getent passwd
+  131  getent passwd Archimedes
+  132  getent passwd Archimede
+  133  getent passwd 
+  134  getent passwd ldap
+  135  cd /etc/pam.d/
+  136  grep -R ldap
+  137  vi /etc/pam.d/system-auth
+  138  systemctl status pam
+  139  getent passwd ldap
+  140  getent passwd 
+  141  authconfig --passalgo=sha256 --enablelocauthorize --enablemkhomedir --enableldap --enableldapauth --ldapserver=ldap://10.202.115.90 --ldapbasedn=dc=jear,dc=co --enableshadow --update
+  142  getent passwd
+  143  systemctl start  nslcd.service
+  144  yum install nslcd
+  145  ll
+  146  grep ldap
+  147  grep -R ldap
+  148  authconfig-tui 
+  149  yum install pam_ldap
+  150  yum install nss-pam-ldapd
+  151  getent passwd
+  152  authconfig-tui 
+  153  getent passwd
+  154  systemctl restart slapd
+  155  systemctl restart openldap
+  156  getent passwd
+  157  authconfig-tui 
+  158  ip a
+  159  authconfig-tui 
+  160  getent passwd
+  161  vi /etc/nsswitch.conf
+  162  authconfig --passalgo=sha256 --enablelocauthorize --enablemkhomedir --enableldap --enableldapauth --ldapserver=ldap://127.0.0.1 --ldapbasedn=dc=example,dc=com --enableshadow --update
+  163  getent passwd
+  164  exit
+  165  ldapsearch -Y EXTERNAL -H ldapi:/// -b "cn=config" "(objectclass=olchdbconfig)"
+  166  history | grep search
+  167   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=Archimedes'
+  168   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=Archimede'
+  169   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=Archimedes'
+  170  getent passwd
+  171  yum install nss_ldap
+  172  getent passwd
+  173  getent passwd Archimedes
+  174  vi /etc/nsswitch.conf
+  175  getent passwd Archimedes
+  176  getent passwd Archimede
+  177  getent passwd 
+  178  getent passwd Archimedes
+  179  ls /etc/nscd.conf 
+  180  vi /etc/nslcd.conf
+  181  systemctl status nslcd
+  182  systemctl start nslcd
+  183  systemctl status nslcd
+  184  getent passwd Archimedes
+  185  getent passwd 
+  186  systemctl status nscd
+  187  systemctl start nscd
+  188  systemctl status nscd
+  189  getent passwd Archimedes
+  190  authconfig --enablesssd --enablesssdauth --enablelocauthorize --update
+  191  yum install pam_sss
+  192  yum install pam-sss
+  193  authconfig --update
+  194  getent passwd Archimedes
+  195  vi /etc/nsswitch.conf
+  196  getent passwd Archimedes
+  197  yum install sssd sssd-client
+  198  vi /etc/openldap/ldap.conf 
+  199  systemctl restart openldap
+  200  systemctl restart slapd
+  201  systemctl status slapd
+  202  getent passwd Archimedes
+  203  getent passwd 
+  204  vi /etc/nsswitch.conf
+  205  vi /etc/sssd/sssd.conf
+  206  history | grep pam
+  207  authconfig --enablesssd --enablesssdauth --enablelocauthorize --update
+  208  getent passwd 
+  209  /etc/sssd/sssd.conf 
+  210  vi /etc/sssd/sssd.conf 
+  211  systemctl restart sssd
+  212  systemctl status sssd.service
+  213  ll /etc/sssd/
+  214  chmod 644 /etc/sssd/sssd.conf 
+  215  ll /etc/sssd/
+  216  chmod 777 /etc/sssd/sssd.conf 
+  217  systemctl restart sssd
+  218  systemctl status sssd.service
+  219  chmod 644 /etc/sssd/sssd.conf 
+  220  chmod 0600 /etc/sssd/sssd.conf 
+  221  systemctl restart sssd
+  222  systemctl status sssd.service
+  223  getent passwd 
+  224  systemctl restart sssd
+  225  systemctl status sssd.service
+  226  authconfig --enablesssd --enablesssdauth --enablelocauthorize --update
+  227  getent passwd 
+  228  vi /etc/sssd/sssd.conf 
+  229  authconfig-tui 
+  230  grep sss /etc/pam.d/password-auth
+  231  systemctl restart sssd
+  232  systemctl status sssd
+  233  getent passwd 
+  234  id Archimedes
+  235  grep sss /etc/pam.d/system-auth
+  236  vi /etc/pam.d/system-auth
+  237  vi system-auth
+  238  sdiff -s system-auth /etc/pam.d/system-auth
+  239  vi /etc/pam.d/system-auth
+  240  getent passwd 
+  241  authconfig --test
+  242  history | grep authconfig
+  243  vi /etc/sssd/sssd.conf 
+  244  systemctl restart sssd
+  245  getent passwd 
+  246  vi /etc/nsswitch.conf
+  247  systemctl restart slapd
+  248  getent passwd 
+  249  vi /etc/nsswitch.conf
+  250  systemctl status sssd
+  251  systemctl status sssd -l
+  252  systemctl stop nscd
+  253  getent passwd 
+  254  history | grep systemctl 
+  255   systemctl stop nslcd
+  256   systemctl status nslcd
+  257   systemctl status nscd
+  258   systemctl status sssd
+  259  systemctl restart sssd
+  260   systemctl status sssd
+  261  getent passwd 
+  262  vi /etc/openldap/ldap.conf 
+  263  getent passwd 
+  264  ldapsearch -x -H "ldaps://nfs.jear.co"
+  265  ldapsearch -x -H "ldap://nfs.jear.co"
+  266  getent passwd 
+  267  authconfig-tui 
+  268  authconfig --enablesssd --enablesssdauth --enablelocauthorize --update
+  269  getent passwd 
+  270  systemctl restart sssd
+  271   systemctl status sssd
+  272  getent passwd 
+  273  vi /etc/nsswitch.conf
+  274  getent passwd 
+  275  getent group
+  276  id Archimedes
+  277  yum install install libpam-ldap libnss-ldap nss-updatedb libnss-db nscd
+  278  vi /etc/openldap/
+  279  vi /etc/openldap/check_password.conf 
+  280  vi /etc/openldap/slapd.d/cn\=config.ldif 
+  281  vi /etc/openldap/ldap.conf 
+  282  yum install libnss-ldap  libnss-ldapd
+  283  yum install nss-pam-ldapd
+  284  systemctl restart nslcd
+  285  systemctl status nslcd
+  286  /etc/nslcd.conf
+  287  vi /etc/nslcd.conf
+  288  getent g
+  289  getent passwd 
+  290  systemctl stop 
+  291  systemctl stop nslcd
+  292  systemctl stop nscd
+  293  vi /etc/nsswitch.conf
+  294  getent passwd 
+  295  history | grep install
+  296  history | grep auth
+  297  authconfig --passalgo=sha256 --enablelocauthorize --enablemkhomedir --enableldap --enableldapauth --ldapserver=ldap://nfs.jear.co --ldapbasedn=dc=jear,dc=co --enableshadow --update
+  298  getent passwd 
+  299  history | grep authconf
+  300  authconfig --test
+  301   systemctl status sssd
+  302   systemctl status nsld
+  303   systemctl status nscd
+  304   systemctl status nscd -l
+  305   systemctl status nslcd -l
+  306   systemctl status sssd -l
+  307  vi /etc/sssd/sssd.conf 
+  308  cp /etc/sssd/sssd.conf /etc/sssd/sssd.conf.bak
+  309  vi /etc/sssd/sssd.conf 
+  310  systemctl restart sssd
+  311  systemctl status sssd
+  312  getent passwd 
+  313  vi /etc/sssd/sssd.conf 
+  314  systemctl status openldap
+  315  systemctl status slapd
+  316  history | grep install
+  317  yum remove openldap-clients openldap-servers authconfig nslcd nss-pam-ldapd sssd sssd-client
+  318  history | grep install
+  319  yum remove  libpam-ldap libnss-ldap nss-updatedb libnss-db nscd
+  320  yum remove  libpam-ldap libnss-ldap nss-updatedb libnss-db nslcd
+  321  exportfs
+  322  vi ad_user_setup.sh
+  323  yum install -y docker openldap-clients
+  324  service docker start
+  325  systemctl enable docker
+  326  service docker status
+  327  sudo docker run --privileged --restart=unless-stopped        -p 53:53 -p 53:53/udp -p 88:88 -p 88:88/udp -p 135:135 -p 137-138:137-138/udp -p 139:139 -p 389:389        -p 389:389/udp -p 445:445 -p 464:464 -p 464:464/udp -p 636:636 -p 1024-1044:1024-1044 -p 3268-3269:3268-3269        -e "SAMBA_DOMAIN=samdom"        -e "SAMBA_REALM=samdom.example.com"        -e "SAMBA_ADMIN_PASSWORD=5ambaPwd@"        -e "ROOT_PASSWORD=R00tPwd@"        -e "LDAP_ALLOW_INSECURE=true"        -e "SAMBA_HOST_IP=$(hostname --all-ip-addresses |cut -f 1 -d' ')"        -v /home/centos/ad_user_setup.sh:/usr/local/bin/custom.sh        --name samdom        --dns 127.0.0.1        -d        --entrypoint "/bin/bash"        rsippl/samba-ad-dc        -c "chmod +x /usr/local/bin/custom.sh &&. /init.sh app:start
+  328  sudo docker run --privileged --restart=unless-stopped        -p 53:53 -p 53:53/udp -p 88:88 -p 88:88/udp -p 135:135 -p 137-138:137-138/udp -p 139:139 -p 389:389        -p 389:389/udp -p 445:445 -p 464:464 -p 464:464/udp -p 636:636 -p 1024-1044:1024-1044 -p 3268-3269:3268-3269        -e "SAMBA_DOMAIN=samdom"        -e "SAMBA_REALM=samdom.example.com"        -e "SAMBA_ADMIN_PASSWORD=5ambaPwd@"        -e "ROOT_PASSWORD=R00tPwd@"        -e "LDAP_ALLOW_INSECURE=true"        -e "SAMBA_HOST_IP=$(hostname --all-ip-addresses |cut -f 1 -d' ')"        -v /home/centos/ad_user_setup.sh:/usr/local/bin/custom.sh        --name samdom        --dns 127.0.0.1        -d        --entrypoint "/bin/bash"        rsippl/samba-ad-dc        -c "chmod +x /usr/local/bin/custom.sh &&. /init.sh app:start"
+  329  docker ps
+  330  systemctl status docker
+  331  yum remove -y docker openldap-clients
+  332  ll
+  333  docker ps
+  334  yum install -y docker openldap-clients
+  335  yum install -y openldap-clients
+  336  ll
+  337  pwd
+  338  sudo docker run --privileged --restart=unless-stopped        -p 53:53 -p 53:53/udp -p 88:88 -p 88:88/udp -p 135:135 -p 137-138:137-138/udp -p 139:139 -p 389:389        -p 389:389/udp -p 445:445 -p 464:464 -p 464:464/udp -p 636:636 -p 1024-1044:1024-1044 -p 3268-3269:3268-3269        -e "SAMBA_DOMAIN=samdom"        -e "SAMBA_REALM=samdom.example.com"        -e "SAMBA_ADMIN_PASSWORD=5ambaPwd@"        -e "ROOT_PASSWORD=R00tPwd@"        -e "LDAP_ALLOW_INSECURE=true"        -e "SAMBA_HOST_IP=$(hostname --all-ip-addresses |cut -f 1 -d' ')"        -v /root/ad_user_setup.sh:/usr/local/bin/custom.sh        --name samdom        --dns 127.0.0.1        -d        --entrypoint "/bin/bash"        rsippl/samba-ad-dc        -c "chmod +x /usr/local/bin/custom.sh &&. /init.sh app:start
+"
+  339  service docker start
+  340  service docker status
+  341  sudo docker run --privileged --restart=unless-stopped        -p 53:53 -p 53:53/udp -p 88:88 -p 88:88/udp -p 135:135 -p 137-138:137-138/udp -p 139:139 -p 389:389        -p 389:389/udp -p 445:445 -p 464:464 -p 464:464/udp -p 636:636 -p 1024-1044:1024-1044 -p 3268-3269:3268-3269        -e "SAMBA_DOMAIN=samdom"        -e "SAMBA_REALM=samdom.example.com"        -e "SAMBA_ADMIN_PASSWORD=5ambaPwd@"        -e "ROOT_PASSWORD=R00tPwd@"        -e "LDAP_ALLOW_INSECURE=true"        -e "SAMBA_HOST_IP=$(hostname --all-ip-addresses |cut -f 1 -d' ')"        -v /root/ad_user_setup.sh:/usr/local/bin/custom.sh        --name samdom        --dns 127.0.0.1        -d        --entrypoint "/bin/bash"        rsippl/samba-ad-dc        -c "chmod +x /usr/local/bin/custom.sh &&. /init.sh app:start"
+  342  docker ps -a
+  343  docker ps
+  344  docker rm 8ef3b78e0d76
+  345  sudo docker run --privileged --restart=unless-stopped        -p 53:53 -p 53:53/udp -p 88:88 -p 88:88/udp -p 135:135 -p 137-138:137-138/udp -p 139:139 -p 389:389        -p 389:389/udp -p 445:445 -p 464:464 -p 464:464/udp -p 636:636 -p 1024-1044:1024-1044 -p 3268-3269:3268-3269        -e "SAMBA_DOMAIN=samdom"        -e "SAMBA_REALM=samdom.example.com"        -e "SAMBA_ADMIN_PASSWORD=5ambaPwd@"        -e "ROOT_PASSWORD=R00tPwd@"        -e "LDAP_ALLOW_INSECURE=true"        -e "SAMBA_HOST_IP=$(hostname --all-ip-addresses |cut -f 1 -d' ')"        -v /root/ad_user_setup.sh:/usr/local/bin/custom.sh        --name samdom        --dns 127.0.0.1        -d        --entrypoint "/bin/bash"        rsippl/samba-ad-dc        -c "chmod +x /usr/local/bin/custom.sh &&. /init.sh app:start"
+  346  docker ps
+  347  ip a
+  348  cd /nfsshare/
+  349  ll
+  350  cd
+  351  ll
+  352  git clone https://github.com/jear/openldap.git
+  353  yum install -y git
+  354  ll
+  355  git clone https://github.com/jear/openldap.git
+  356  mv *.ldif openldap/
+  357  ll
+  358  cd openldap/
+  359  ll
+  360  history >> history
+    1  ip a
+    2  top
+    3  poweroff 
+    4  ip a
+    5  reboot
+    6  vi /etc/resolv.conf 
+    7  systemctl status NetworkManager
+    8  systemctl stop NetworkManager
+    9  systemctl disable NetworkManager
+   10  vi /etc/resolv.conf 
+   11  ip a
+   12  cat /etc/resolv.conf 
+   13  chattr +i /etc/resolv.conf 
+   14  reboot
+   15  cat /etc/resolv.conf 
+   16  vi /etc/resolv.conf 
+   17  chattr -i /etc/resolv.conf 
+   18  vi /etc/resolv.conf 
+   19  cat /etc/resolv.conf 
+   20  poweroff 
+   21  exportfs 
+   22  exit
+   23  exportfs
+   24  exit
+   25  history 
+   26  cat /etc/passwd
+   27  exportfs 
+   28  cat /etc/exports
+   29  mount
+   30  systemctl status nfs
+   31  mount
+   32  exit
+   33  ps -ef
+   34  history 
+   35  systemctl status nfs
+   36  exportfs
+   37  history 
+   38  systemctl status nfs
+   39  exportfs
+   40  yum -y install openldap-clients openldap-servers
+   41  systemctl start slapd
+   42  systemctl status slapd
+   43  slappasswd
+   44  vi /etc/openldap/slapd.d/cn\=config/olcDatabase\=\{2\}hdb.ldif 
+   45   ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=config olcDatabase=\*
+   46  vi my_config.ldif
+   47  ldapmodify -Y EXTERNAL -H ldapi:/// -f my_config.ldif
+   48   ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=config olcDatabase=\*
+   49  vi my_config2.ldif
+   50  ldapmodify -Y EXTERNAL -H ldapi:/// -f my_config2.ldif
+   51  vi my_config3.ldif
+   52  ldapmodify -Y EXTERNAL -H ldapi:/// -f my_config3.ldif
+   53  ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=config olcDatabase=\*
+   54  slaptest -u
+   55  vi example.ldif
+   56  ldapadd -f example.ldif -D cn=admin,dc=jear,dc=co -w hpinvent
+   57   ldapsearch -x -b dc=jear,dc=co
+   58  vi users.ldif
+   59  ldapadd -f users.ldif -D cn=admin,dc=jear,dc=co -w hpinvent
+   60  vi archimedes.ldif
+   61  ldapadd -f archimedes.ldif -D cn=admin,dc=jear,dc=co -w hpinvent
+   62  vi archimedes.ldif
+   63  vi /etc/openldap/schema/inetorgperson.ldif 
+   64  ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/inetorgperson.ldif
+   65  ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/cosine.ldif
+   66  ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/inetorgperson.ldif
+   67  ldapadd -f archimedes.ldif -D cn=admin,dc=jear,dc=co -w hpinvent
+   68  slapcat -b "cn=schema,cn=config"
+   69  vi group.ldif
+   70  ldapadd -f group.ldif -D cn=admin,dc=jear,dc=co -w hpinvent
+   71  ldapsearch -x -b "dc=example,dc=com" "(cn=Archimedes)"
+   72  vi group.ldif 
+   73  vi users.ldif 
+   74  ll
+   75  vi archimedes.ldif 
+   76  $ ldapsearch -x -LLL -h host.example.com -D user -w password -b"dc=ad,dc=example,dc=com" -s sub "(objectClass=user)" givenName
+   77  ldapsearch -x -LLL -h nfs.jear.co -D arch -w eureka -b"dc=jear,dc=jear,dc=co" -s sub "(objectClass=user)" givenName
+   78  ldapsearch -x -b "dc=example,dc=com" "(cn=Archimedes)"
+   79  ldapsearch -x -b "dc=jear,dc=co" "(cn=Archimedes)"
+   80  ldapsearch -x -LLL -h nfs.jear.co -D arch -w eureka -b "dc=jear,dc=co" "(cn=Archimedes)"
+   81  ldapsearch -x -b "dc=jear,dc=co" "(cn=Archimedes)"
+   82  yum install net-tools
+   83  netstat plan
+   84  netstat -plan
+   85  netstat -plan | grep ldap
+   86  ps -ef | grep ldap
+   87  netstat -plan | grep 10003
+   88  ip a
+   89  grep -i dn *
+   90  ldapsearch -x -b "dc=jear,dc=co" "(cn=Archimedes)"
+   91  grep -i cn *
+   92  ldapsearch -x -b "dc=jear,dc=co" "(cn=scientists)"
+   93  grep -i attr *
+   94  grep -i cn *
+   95   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=arch'
+   96   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=admin'
+   97  ll
+   98   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=toto'
+   99  ldapsearch -x -LLL -h nfs.jear.co -D arch -w eureka -b "dc=jear,dc=co" "(cn=Archimedes)"
+  100  history | grep search
+  101   ldapsearch -x -b dc=jear,dc=co
+  102   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=Archimedes'
+  103  ll
+  104  vi archimedes.ldif
+  105  history | grep euroka
+  106  history | grep eureka
+  107  ldapsearch -x -LLL -h nfs.jear.co -D arch -w eureka -b "dc=jear,dc=co" "(cn=Archimedes)"
+  108  history 
+  109  cd /etc/openldap/
+  110  grep -R enumerate 
+  111  ll
+  112  vi ldap.conf 
+  113  nslcd -d
+  114  /etc/nsswitch.conf
+  115  vi /etc/nsswitch.conf
+  116  ldapsearch -Y EXTERNAL -H ldapi:/// -b "cn=config"
+  117  "(objectclass=olchdbconfig)"
+  118  ldapsearch -Y EXTERNAL -H ldapi:/// -b "cn=config" "(objectclass=olchdbconfig)"
+  119  vi /etc/sssd/sssd.conf
+  120  getent passwd
+  121  vi /etc/nsswitch.conf
+  122  systemctl restart slapd
+  123  getent passwd
+  124  vi /etc/nsswitch.conf
+  125  systemctl restart slapd
+  126  getent passwd
+  127  yum -y install authconfig
+  128  authconfig --passalgo=sha256 --enablelocauthorize --enablemkhomedir --enableldap --enableldapauth --ldapserver=ldap://127.0.0.1 --ldapbasedn=dc=example,dc=com --enableshadow --update
+  129  authconfig --passalgo=sha256 --enablelocauthorize --enablemkhomedir --enableldap --enableldapauth --ldapserver=ldap://127.0.0.1 --ldapbasedn=dc=jear,dc=co --enableshadow --update
+  130  getent passwd
+  131  getent passwd Archimedes
+  132  getent passwd Archimede
+  133  getent passwd 
+  134  getent passwd ldap
+  135  cd /etc/pam.d/
+  136  grep -R ldap
+  137  vi /etc/pam.d/system-auth
+  138  systemctl status pam
+  139  getent passwd ldap
+  140  getent passwd 
+  141  authconfig --passalgo=sha256 --enablelocauthorize --enablemkhomedir --enableldap --enableldapauth --ldapserver=ldap://10.202.115.90 --ldapbasedn=dc=jear,dc=co --enableshadow --update
+  142  getent passwd
+  143  systemctl start  nslcd.service
+  144  yum install nslcd
+  145  ll
+  146  grep ldap
+  147  grep -R ldap
+  148  authconfig-tui 
+  149  yum install pam_ldap
+  150  yum install nss-pam-ldapd
+  151  getent passwd
+  152  authconfig-tui 
+  153  getent passwd
+  154  systemctl restart slapd
+  155  systemctl restart openldap
+  156  getent passwd
+  157  authconfig-tui 
+  158  ip a
+  159  authconfig-tui 
+  160  getent passwd
+  161  vi /etc/nsswitch.conf
+  162  authconfig --passalgo=sha256 --enablelocauthorize --enablemkhomedir --enableldap --enableldapauth --ldapserver=ldap://127.0.0.1 --ldapbasedn=dc=example,dc=com --enableshadow --update
+  163  getent passwd
+  164  exit
+  165  ldapsearch -Y EXTERNAL -H ldapi:/// -b "cn=config" "(objectclass=olchdbconfig)"
+  166  history | grep search
+  167   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=Archimedes'
+  168   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=Archimede'
+  169   ldapsearch -o ldif-wrap=no -x -H ldap://10.202.115.90:389 -b 'dc=jear,dc=co' -s sub 'cn=Archimedes'
+  170  getent passwd
+  171  yum install nss_ldap
+  172  getent passwd
+  173  getent passwd Archimedes
+  174  vi /etc/nsswitch.conf
+  175  getent passwd Archimedes
+  176  getent passwd Archimede
+  177  getent passwd 
+  178  getent passwd Archimedes
+  179  ls /etc/nscd.conf 
+  180  vi /etc/nslcd.conf
+  181  systemctl status nslcd
+  182  systemctl start nslcd
+  183  systemctl status nslcd
+  184  getent passwd Archimedes
+  185  getent passwd 
+  186  systemctl status nscd
+  187  systemctl start nscd
+  188  systemctl status nscd
+  189  getent passwd Archimedes
+  190  authconfig --enablesssd --enablesssdauth --enablelocauthorize --update
+  191  yum install pam_sss
+  192  yum install pam-sss
+  193  authconfig --update
+  194  getent passwd Archimedes
+  195  vi /etc/nsswitch.conf
+  196  getent passwd Archimedes
+  197  yum install sssd sssd-client
+  198  vi /etc/openldap/ldap.conf 
+  199  systemctl restart openldap
+  200  systemctl restart slapd
+  201  systemctl status slapd
+  202  getent passwd Archimedes
+  203  getent passwd 
+  204  vi /etc/nsswitch.conf
+  205  vi /etc/sssd/sssd.conf
+  206  history | grep pam
+  207  authconfig --enablesssd --enablesssdauth --enablelocauthorize --update
+  208  getent passwd 
+  209  /etc/sssd/sssd.conf 
+  210  vi /etc/sssd/sssd.conf 
+  211  systemctl restart sssd
+  212  systemctl status sssd.service
+  213  ll /etc/sssd/
+  214  chmod 644 /etc/sssd/sssd.conf 
+  215  ll /etc/sssd/
+  216  chmod 777 /etc/sssd/sssd.conf 
+  217  systemctl restart sssd
+  218  systemctl status sssd.service
+  219  chmod 644 /etc/sssd/sssd.conf 
+  220  chmod 0600 /etc/sssd/sssd.conf 
+  221  systemctl restart sssd
+  222  systemctl status sssd.service
+  223  getent passwd 
+  224  systemctl restart sssd
+  225  systemctl status sssd.service
+  226  authconfig --enablesssd --enablesssdauth --enablelocauthorize --update
+  227  getent passwd 
+  228  vi /etc/sssd/sssd.conf 
+  229  authconfig-tui 
+  230  grep sss /etc/pam.d/password-auth
+  231  systemctl restart sssd
+  232  systemctl status sssd
+  233  getent passwd 
+  234  id Archimedes
+  235  grep sss /etc/pam.d/system-auth
+  236  vi /etc/pam.d/system-auth
+  237  vi system-auth
+  238  sdiff -s system-auth /etc/pam.d/system-auth
+  239  vi /etc/pam.d/system-auth
+  240  getent passwd 
+  241  authconfig --test
+  242  history | grep authconfig
+  243  vi /etc/sssd/sssd.conf 
+  244  systemctl restart sssd
+  245  getent passwd 
+  246  vi /etc/nsswitch.conf
+  247  systemctl restart slapd
+  248  getent passwd 
+  249  vi /etc/nsswitch.conf
+  250  systemctl status sssd
+  251  systemctl status sssd -l
+  252  systemctl stop nscd
+  253  getent passwd 
+  254  history | grep systemctl 
+  255   systemctl stop nslcd
+  256   systemctl status nslcd
+  257   systemctl status nscd
+  258   systemctl status sssd
+  259  systemctl restart sssd
+  260   systemctl status sssd
+  261  getent passwd 
+  262  vi /etc/openldap/ldap.conf 
+  263  getent passwd 
+  264  ldapsearch -x -H "ldaps://nfs.jear.co"
+  265  ldapsearch -x -H "ldap://nfs.jear.co"
+  266  getent passwd 
+  267  authconfig-tui 
+  268  authconfig --enablesssd --enablesssdauth --enablelocauthorize --update
+  269  getent passwd 
+  270  systemctl restart sssd
+  271   systemctl status sssd
+  272  getent passwd 
+  273  vi /etc/nsswitch.conf
+  274  getent passwd 
+  275  getent group
+  276  id Archimedes
+  277  yum install install libpam-ldap libnss-ldap nss-updatedb libnss-db nscd
+  278  vi /etc/openldap/
+  279  vi /etc/openldap/check_password.conf 
+  280  vi /etc/openldap/slapd.d/cn\=config.ldif 
+  281  vi /etc/openldap/ldap.conf 
+  282  yum install libnss-ldap  libnss-ldapd
+  283  yum install nss-pam-ldapd
+  284  systemctl restart nslcd
+  285  systemctl status nslcd
+  286  /etc/nslcd.conf
+  287  vi /etc/nslcd.conf
+  288  getent g
+  289  getent passwd 
+  290  systemctl stop 
+  291  systemctl stop nslcd
+  292  systemctl stop nscd
+  293  vi /etc/nsswitch.conf
+  294  getent passwd 
+  295  history | grep install
+  296  history | grep auth
+  297  authconfig --passalgo=sha256 --enablelocauthorize --enablemkhomedir --enableldap --enableldapauth --ldapserver=ldap://nfs.jear.co --ldapbasedn=dc=jear,dc=co --enableshadow --update
+  298  getent passwd 
+  299  history | grep authconf
+  300  authconfig --test
+  301   systemctl status sssd
+  302   systemctl status nsld
+  303   systemctl status nscd
+  304   systemctl status nscd -l
+  305   systemctl status nslcd -l
+  306   systemctl status sssd -l
+  307  vi /etc/sssd/sssd.conf 
+  308  cp /etc/sssd/sssd.conf /etc/sssd/sssd.conf.bak
+  309  vi /etc/sssd/sssd.conf 
+  310  systemctl restart sssd
+  311  systemctl status sssd
+  312  getent passwd 
+  313  vi /etc/sssd/sssd.conf 
+  314  systemctl status openldap
+  315  systemctl status slapd
+  316  history | grep install
+  317  yum remove openldap-clients openldap-servers authconfig nslcd nss-pam-ldapd sssd sssd-client
+  318  history | grep install
+  319  yum remove  libpam-ldap libnss-ldap nss-updatedb libnss-db nscd
+  320  yum remove  libpam-ldap libnss-ldap nss-updatedb libnss-db nslcd
+  321  exportfs
+  322  vi ad_user_setup.sh
+  323  yum install -y docker openldap-clients
+  324  service docker start
+  325  systemctl enable docker
+  326  service docker status
+  327  sudo docker run --privileged --restart=unless-stopped        -p 53:53 -p 53:53/udp -p 88:88 -p 88:88/udp -p 135:135 -p 137-138:137-138/udp -p 139:139 -p 389:389        -p 389:389/udp -p 445:445 -p 464:464 -p 464:464/udp -p 636:636 -p 1024-1044:1024-1044 -p 3268-3269:3268-3269        -e "SAMBA_DOMAIN=samdom"        -e "SAMBA_REALM=samdom.example.com"        -e "SAMBA_ADMIN_PASSWORD=5ambaPwd@"        -e "ROOT_PASSWORD=R00tPwd@"        -e "LDAP_ALLOW_INSECURE=true"        -e "SAMBA_HOST_IP=$(hostname --all-ip-addresses |cut -f 1 -d' ')"        -v /home/centos/ad_user_setup.sh:/usr/local/bin/custom.sh        --name samdom        --dns 127.0.0.1        -d        --entrypoint "/bin/bash"        rsippl/samba-ad-dc        -c "chmod +x /usr/local/bin/custom.sh &&. /init.sh app:start
+  328  sudo docker run --privileged --restart=unless-stopped        -p 53:53 -p 53:53/udp -p 88:88 -p 88:88/udp -p 135:135 -p 137-138:137-138/udp -p 139:139 -p 389:389        -p 389:389/udp -p 445:445 -p 464:464 -p 464:464/udp -p 636:636 -p 1024-1044:1024-1044 -p 3268-3269:3268-3269        -e "SAMBA_DOMAIN=samdom"        -e "SAMBA_REALM=samdom.example.com"        -e "SAMBA_ADMIN_PASSWORD=5ambaPwd@"        -e "ROOT_PASSWORD=R00tPwd@"        -e "LDAP_ALLOW_INSECURE=true"        -e "SAMBA_HOST_IP=$(hostname --all-ip-addresses |cut -f 1 -d' ')"        -v /home/centos/ad_user_setup.sh:/usr/local/bin/custom.sh        --name samdom        --dns 127.0.0.1        -d        --entrypoint "/bin/bash"        rsippl/samba-ad-dc        -c "chmod +x /usr/local/bin/custom.sh &&. /init.sh app:start"
+  329  docker ps
+  330  systemctl status docker
+  331  yum remove -y docker openldap-clients
+  332  ll
+  333  docker ps
+  334  yum install -y docker openldap-clients
+  335  yum install -y openldap-clients
+  336  ll
+  337  pwd
+  338  sudo docker run --privileged --restart=unless-stopped        -p 53:53 -p 53:53/udp -p 88:88 -p 88:88/udp -p 135:135 -p 137-138:137-138/udp -p 139:139 -p 389:389        -p 389:389/udp -p 445:445 -p 464:464 -p 464:464/udp -p 636:636 -p 1024-1044:1024-1044 -p 3268-3269:3268-3269        -e "SAMBA_DOMAIN=samdom"        -e "SAMBA_REALM=samdom.example.com"        -e "SAMBA_ADMIN_PASSWORD=5ambaPwd@"        -e "ROOT_PASSWORD=R00tPwd@"        -e "LDAP_ALLOW_INSECURE=true"        -e "SAMBA_HOST_IP=$(hostname --all-ip-addresses |cut -f 1 -d' ')"        -v /root/ad_user_setup.sh:/usr/local/bin/custom.sh        --name samdom        --dns 127.0.0.1        -d        --entrypoint "/bin/bash"        rsippl/samba-ad-dc        -c "chmod +x /usr/local/bin/custom.sh &&. /init.sh app:start
+  339  "
+  340  service docker start
+  341  service docker status
+  342  sudo docker run --privileged --restart=unless-stopped        -p 53:53 -p 53:53/udp -p 88:88 -p 88:88/udp -p 135:135 -p 137-138:137-138/udp -p 139:139 -p 389:389        -p 389:389/udp -p 445:445 -p 464:464 -p 464:464/udp -p 636:636 -p 1024-1044:1024-1044 -p 3268-3269:3268-3269        -e "SAMBA_DOMAIN=samdom"        -e "SAMBA_REALM=samdom.example.com"        -e "SAMBA_ADMIN_PASSWORD=5ambaPwd@"        -e "ROOT_PASSWORD=R00tPwd@"        -e "LDAP_ALLOW_INSECURE=true"        -e "SAMBA_HOST_IP=$(hostname --all-ip-addresses |cut -f 1 -d' ')"        -v /root/ad_user_setup.sh:/usr/local/bin/custom.sh        --name samdom        --dns 127.0.0.1        -d        --entrypoint "/bin/bash"        rsippl/samba-ad-dc        -c "chmod +x /usr/local/bin/custom.sh &&. /init.sh app:start"
+  343  docker ps -a
+  344  docker ps
+  345  docker rm 8ef3b78e0d76
+  346  sudo docker run --privileged --restart=unless-stopped        -p 53:53 -p 53:53/udp -p 88:88 -p 88:88/udp -p 135:135 -p 137-138:137-138/udp -p 139:139 -p 389:389        -p 389:389/udp -p 445:445 -p 464:464 -p 464:464/udp -p 636:636 -p 1024-1044:1024-1044 -p 3268-3269:3268-3269        -e "SAMBA_DOMAIN=samdom"        -e "SAMBA_REALM=samdom.example.com"        -e "SAMBA_ADMIN_PASSWORD=5ambaPwd@"        -e "ROOT_PASSWORD=R00tPwd@"        -e "LDAP_ALLOW_INSECURE=true"        -e "SAMBA_HOST_IP=$(hostname --all-ip-addresses |cut -f 1 -d' ')"        -v /root/ad_user_setup.sh:/usr/local/bin/custom.sh        --name samdom        --dns 127.0.0.1        -d        --entrypoint "/bin/bash"        rsippl/samba-ad-dc        -c "chmod +x /usr/local/bin/custom.sh &&. /init.sh app:start"
+  347  docker ps
+  348  ip a
+  349  cd /nfsshare/
+  350  ll
+  351  cd
+  352  ll
+  353  git clone https://github.com/jear/openldap.git
+  354  yum install -y git
+  355  ll
+  356  git clone https://github.com/jear/openldap.git
+  357  mv *.ldif openldap/
+  358  ll
+  359  cd openldap/
+  360  ll
+  361  history >> history
+  362  ll
+  363  vi history 
+  364  cd openldap/
+  365  ll
+  366  history >> history 

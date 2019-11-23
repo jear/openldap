@@ -1,0 +1,4 @@
+dn: cn=scientists,ou=users,dc=jear,dc=co
+cn: scientists
+objectClass: groupOfNames
+member: cn=Archimedes of Lyon,ou=users,dc=jear,dc=co

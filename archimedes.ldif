@@ -1,0 +1,6 @@
+dn: cn=Archimedes of Lyon,ou=users,dc=jear,dc=co
+cn: Archimedes
+sn: Lyon
+objectClass: inetOrgPerson
+userPassword: eureka
+uid: arch
